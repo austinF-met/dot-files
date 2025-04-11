@@ -9,14 +9,9 @@ call plug#begin('~/.vim/plugged')
   Plug 'leafgarland/typescript-vim', { 'for': ['javascript', 'typescript'] }  " Vim typescript syntax highlighting
   "
   Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
-"  Plug 'heavenshell/vim-tslint', { 'for': ['typescript'] }
   " For async completion
   if has('nvim')
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  else
-    Plug 'Shougo/deoplete.nvim'
-    Plug 'roxma/nvim-yarp'
-    Plug 'roxma/vim-hug-neovim-rpc'
   endif
   " Prettier will go through my files and standardize the js
   Plug 'prettier/vim-prettier', {
@@ -37,8 +32,6 @@ call plug#begin('~/.vim/plugged')
   Plug 'mustache/vim-mustache-handlebars'
   Plug 'plasticboy/vim-markdown'
   Plug 'groenewege/vim-less'
-  Plug 'slim-template/vim-slim', { 'for': ['slim'] }
-  Plug 'vim-ruby/vim-ruby', { 'for': ['ruby'] }
 call plug#end()
 
 set t_Co=256
@@ -124,8 +117,6 @@ endfunction
 
 " deoplete setup
 let g:deoplete#enable_at_startup = 1
-" have deoplete from current buffer directory
-let g:deoplete#file#enable_buffer_path = 1
 
 function! s:bufopen(e)
   execute 'buffer' matchstr(a:e, '^[ 0-9]*')
@@ -151,6 +142,30 @@ match OverLength /\%101v.\+/
 " ctrl+ww flips back and forth between nerdtree and editor
 " ctrl+n toggles nerdtree
 nmap <silent> <C-n> :NERDTreeToggle<CR>
+
+" Automatically set NERDTree root to the directory passed to nvim
+autocmd VimEnter * call s:OpenNERDTreeAtStartup()
+
+function! s:OpenNERDTreeAtStartup()
+  " If no file or directory was passed, do nothing
+  if argc() == 0
+    return
+  endif
+
+  " Get the first argument (file or directory)
+  let l:path = argv(0)
+
+  " If the argument is a file, take its parent directory
+  if !isdirectory(l:path)
+    let l:path = fnamemodify(l:path, ":h")
+  endif
+
+  " Change to that directory
+  execute 'cd' fnameescape(l:path)
+
+  " Open NERDTree rooted at that directory
+  execute 'NERDTree' fnameescape(l:path)
+endfunction
 
 set statusline=%f        "path leading to filename
 "set statusline+=%t       "tail of the filename
@@ -197,7 +212,6 @@ set backspace=indent,eol,start
 "----------------------------------------------------------------------------
 " Set Custom Filetypes
 "----------------------------------------------------------------------------
-
 au BufNewFile,BufRead {Vagrantfile,Gemfile,Rakefile,config.ru} set filetype=ruby
 
 " Close ruby method defs

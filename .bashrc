@@ -175,6 +175,7 @@ alias dct='docker compose exec test'
 alias dce='docker compose exec'
 alias aws_login='aws sso login --profile staging'
 alias servermux='${HOME}/dot-files/muxes/servermux'
+alias anomalymux='${HOME}/dot-files/muxes/anomalymux'
 alias nodemux='${HOME}/dot-files/muxes/nodemux'
 alias flasktree="tree -a -I '__pycache__|*git|*cache' ./"
 
@@ -195,7 +196,8 @@ then
  eval "$(rbenv init -)"
 fi
 
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 

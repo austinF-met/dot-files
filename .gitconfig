@@ -2,18 +2,25 @@
   name = Austin Flores
   email = ctrl4ltdeleteme@gmail.com
 [alias]
+  amend = commit --amend --no-edit
   aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /' | sort
-  branchc = for-each-ref --sort=committerdate refs/heads/ --format='%(color: red)%(committerdate:short) %(color: cyan)%(refname:short)'
-  rom = pull --rebase origin master
+  branchc = "!git for-each-ref --sort=committerdate refs/heads/ --format='%(color: red)%(committerdate:short) %(color: cyan)%(refname:short)' | grep -E '[0-9]{4}-[0-9]{2}-[0-9]{2} (fix|chore|feat|main|develop)'"
+  branchp = "!git for-each-ref --sort=committerdate refs/heads/ --format='%(color: red)%(committerdate:short) %(color: cyan)%(refname:short)' | grep -Ev 'fix|chore|feat|main|develop'"
+  reba = pull --rebase origin main
   delete-merged = !git branch --merged upstream/master | grep -v '\\*\\|master\\|dev' | xargs -n 1 git branch -d 
+  me = log origin/main --author=Austin
   st = status -sb
+  co = checkout
   ci = commit
+  praise = blame
   df = diff --color
   dfs = diff --color --staged
   lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
   lola = log --pretty=format:'%C(yellow)%h %C(red)%ad %C(blue)%an%C(green)%d %C(reset)%s' --date=short --graph --all
   plog = log --abbrev-commit --abbrev=5 --date=format:'%Y-%m-%d %H:%m'
-  new-commits= log dev.. --pretty=oneline --no-merges
+  new-commits= log main.. --pretty=oneline --no-merges
+  branch-changes = "!f() { git fetch origin && git diff $(git merge-base HEAD origin/main); }; f"
+	update-develop = "!f() { \\\n  if ! git diff --quiet || ! git diff --cached --quiet; then \\\n    echo \"✖ Uncommitted changes present. Commit or stash them first.\"; \\\n    exit 1; \\\n  fi;  \\\n  git pull --rebase origin develop && \\\n  git submodule update --init --recursive; \\\n}; f"
 [color]
   ui = true
 [pull]
@@ -21,4 +28,19 @@
 [push]
   default = current
 [core]
-	editor = nvim
+  editor = nvim
+  excludesfile = /home/unflores/.gitignore
+[commit]
+	gpgsign = true
+[init]
+	defaultBranch = main
+[status]
+	submoduleSummary = true
+[diff]
+	submodule = log
+[tag]
+	gpgSign = true
+[credential "https://github.com"]
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = !/usr/bin/gh auth git-credential

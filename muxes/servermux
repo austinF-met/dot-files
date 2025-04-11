@@ -9,7 +9,8 @@ function new_window {
   name=$1
   
   if [ "$pane" -eq 1 ];then
-    tmux new-session -d -s $DIR -c "$DIR" 'bash -i'
+    echo $DIR
+    tmux new-session -d -s "$DIR" -c "$DIR" 'bash -i'
   
     # First window already created
     tmux rename-window $name
@@ -27,6 +28,7 @@ new_window 'server'
 new_window 'tests'
 new_window 'docker'
 new_window 'jobs'
+new_window 'front'
 
 
 # Start at 1
