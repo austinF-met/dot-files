@@ -136,6 +136,44 @@ function convert_dir_psds_to_png(){
   for i in *.psd; do sips -s format png "${i}" --out "${i%psd}png"; done
 }
 
+yarn_workspace_function() {
+  if [[ -z "$1" ]]; then
+    echo "Usage: yapp <workspace-suffix> <script-name> [args...]"
+    echo "Example: yapp core test"
+    return 1
+  fi
+
+  local workspace="service-diagnostics-$1"
+  shift
+
+  if [[ -z "$1" ]]; then
+    echo "Usage: yapp <workspace-suffix> <script-name> [args...]"
+    return 1
+  fi
+
+  yarn workspace "$workspace" run "$@"
+}
+yarn_package_function() {
+  if [[ -z "$1" ]]; then
+    echo "Usage: yapp <package-name> <script-name> [args...]"
+    echo "Example: ypak core test"
+    return 1
+  fi
+
+  local package="diagnostics-$1"
+  shift
+
+  if [[ -z "$1" ]]; then
+    echo "Usage: yapp <package-name> <script-name> [args...]"
+    return 1
+  fi
+
+  yarn workspace "$package" run "$@"
+}
+
+alias ypak='yarn_package_function'
+alias yapp='yarn_workspace_function'
+
 
 alias mem_size='du -sh'
 alias grep='grep --color'
@@ -186,8 +224,8 @@ then
  eval "$(rbenv init -)"
 fi
 
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# I forget why I needed to use nvm
+# export NVM_DIR="$HOME/.nvm"
+#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+#[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
